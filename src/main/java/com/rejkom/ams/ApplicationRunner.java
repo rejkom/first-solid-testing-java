@@ -27,11 +27,14 @@ public class ApplicationRunner {
 
         LogManager configLogs = new LogManager(ams.getSshExecutor());
 
-        ams.startAms(CONFIG_NAME);
+        AmsStartOnLinux start = new AmsStartOnLinux(ams.getSshExecutor());
+        AmsStopOnLinux stop = new AmsStopOnLinux(ams.getSshExecutor());
+
+        String startResult = ams.executeCommand(start, CONFIG_NAME);
         configLogs.checkLogContains(CONFIG_NAME, "successfully started");
 
+        String stopResult = ams.executeCommand(stop, CONFIG_NAME);
 
-        ams.stopAms(CONFIG_NAME);
         database.stopDatabase();
         container.stopWebContainer();
     }

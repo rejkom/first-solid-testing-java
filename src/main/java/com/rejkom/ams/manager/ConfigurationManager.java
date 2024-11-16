@@ -1,15 +1,15 @@
 package com.rejkom.ams.manager;
 
-import com.rejkom.ams.executor.SSHExecutorInterface;
+import com.rejkom.ams.executor.SshCommandExecutor;
 
 /**
  * This class handles configuration related operations.
  */
 public class ConfigurationManager {
 
-    private final SSHExecutorInterface sshExecutor;
+    private final SshCommandExecutor sshExecutor;
 
-    public ConfigurationManager(SSHExecutorInterface sshExecutor) {
+    public ConfigurationManager(SshCommandExecutor sshExecutor) {
         this.sshExecutor = sshExecutor;
     }
 

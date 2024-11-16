@@ -3,7 +3,7 @@ package com.rejkom.ams.manager;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
-import com.rejkom.ams.executor.SSHExecutorInterface;
+import com.rejkom.ams.executor.SshCommandExecutor;
 
 import java.io.*;
 
@@ -12,9 +12,9 @@ import java.io.*;
  */
 public class FileManager {
 
-    private final SSHExecutorInterface sshExecutor;
+    private final SshCommandExecutor sshExecutor;
 
-    public FileManager(SSHExecutorInterface sshExecutor) {
+    public FileManager(SshCommandExecutor sshExecutor) {
         this.sshExecutor = sshExecutor;
     }
 
@@ -43,7 +43,7 @@ public class FileManager {
         String filePath = "$AMS_CONFIG_DIR sampleMsg/received/" + saveFilePath;
 
         try {
-            Channel channel = sshExecutor.sesConnection.openChannel("exec");
+            Channel channel = sshExecutor.getSessionManager().getSession().openChannel("exec");
             OutputStream outputStream = new FileOutputStream(filePath);
             InputStream inputStream = channel.getInputStream();
 
@@ -72,7 +72,7 @@ public class FileManager {
 
         sshExecutor.sendCommand(compareCommand);
         String command = ". .bashrc \n cat $configDirectory/" + expectedConfig + "/result.xml \n";
-        Channel channel = sshExecutor.sesConnection.openChannel("exec");
+        Channel channel = sshExecutor.getSessionManager().getSession().openChannel("exec");
         ((ChannelExec) channel).setCommand(command);
         channel.setInputStream(null);
         channel.connect();
@@ -87,31 +87,10 @@ public class FileManager {
         return diffResult == null;
     }
 
-    // Moved from SSHExecutorInterface class
-    public boolean grepFile(String filePatch, String fileName, String grepCommand)
-            throws IOException, JSchException {
+    public boolean grepFile(String filePatch, String fileName, String grepCommand) {
 
         String command = "cat " + filePatch + "/" + fileName + " | grep \"" + grepCommand + "\"";
-        Channel channel = sshExecutor.sesConnection.openChannel("exec");
-        ((ChannelExec) channel).setCommand(command);
-        channel.setInputStream(null);
-        channel.connect();
-        InputStream inputStream = channel.getInputStream();
-        InputStreamReader isReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(isReader);
-        String resultOfGrep = bufferedReader.readLine();
-
-        System.out.println("Found value = " + resultOfGrep);
-
-        inputStream.close();
-        bufferedReader.close();
-        channel.disconnect();
-
-        boolean expected;
-        if (resultOfGrep != null) expected = true;
-        else expected = false;
-        return expected;
+        return !sshExecutor.sendCommand(command).isEmpty();
     }
-
 
 }

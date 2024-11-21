@@ -1,33 +1,24 @@
 package com.rejkom.ams.executor;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSchException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 /**
  * This class contains methods related to executing commands and returning output.
  */
 public class RemoteCommandExecutor {
 
-    private final SshCommandExecutor sshExecutor;
+    private final SshCommandExecutorOnLinux sshExecutor;
 
-    public RemoteCommandExecutor(SshCommandExecutor sshExecutor) {
+    public RemoteCommandExecutor(SshCommandExecutorOnLinux sshExecutor) {
         this.sshExecutor = sshExecutor;
     }
 
     public String executeCommandAndReturnOutput(String command) {
-        return sshExecutor.sendCommand(command);
+        return sshExecutor.executeCommand(command);
     }
 
     public int executeCommandAndGetCount(String commandTarget, String outputPath) {
 
         String command = "" + commandTarget + " $configDirectory/" + outputPath + "/* | wc -l";
-        String targetCount = sshExecutor.sendCommand(command);
+        String targetCount = sshExecutor.executeCommand(command);
         // Convert the retrieved count from String to Integer
         int resultCount = Integer.parseInt(targetCount.trim());
         return resultCount;
@@ -35,7 +26,7 @@ public class RemoteCommandExecutor {
 
     public boolean enterCommandReturnValue(String enterCommand) {
         String command = enterCommand;
-        String resultOfGrep = sshExecutor.sendCommand(command);
+        String resultOfGrep = sshExecutor.executeCommand(command);
         System.out.println("Found value= " + resultOfGrep);
         return resultOfGrep != null;
     }
@@ -45,7 +36,7 @@ public class RemoteCommandExecutor {
 
         String command = ("sed 's/[^ ]//g' $AMS_CONFIG_DIR/" + configName +
                 "/data/export/* | awk '{ print length }' |  awk '{ SUM += $1} END { print SUM+0 }'");
-        String amountOfTarget = sshExecutor.sendCommand(command);
+        String amountOfTarget = sshExecutor.executeCommand(command);
 
         //converting a String with spaces to an Integer
         int amountInt = Integer.parseInt(amountOfTarget.trim());

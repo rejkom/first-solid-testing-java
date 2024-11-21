@@ -14,11 +14,11 @@ public class WebContainerManager {
     }
 
     public void startWebContainer() {
-        sshExecutor.sendCommand("startapplication < /dev/null >& /dev/null \n sleep 10 ");
+        sshExecutor.executeCommand("startapplication < /dev/null >& /dev/null \n sleep 10 ");
     }
 
     public void stopWebContainer() {
-        sshExecutor.sendCommand("stopapplication < /dev/null >& /dev/null \n sleep 10 ");
+        sshExecutor.executeCommand("stopapplication < /dev/null >& /dev/null \n sleep 10 ");
     }
 
 }

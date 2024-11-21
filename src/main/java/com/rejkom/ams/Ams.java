@@ -1,7 +1,6 @@
 package com.rejkom.ams;
 
-import com.rejkom.ams.executor.CommandExecutor;
-import com.rejkom.ams.executor.SshCommandExecutor;
+import com.rejkom.ams.executor.*;
 import com.rejkom.ams.manager.SshSessionManager;
 
 /**
@@ -14,7 +13,7 @@ public class Ams {
     public Ams(String user, String ipAddress) {
         SshSessionManager sessionManager = new SshSessionManager(user, ipAddress);
         sessionManager.connectSession();
-        sshExecutor = new SshCommandExecutor(sessionManager);
+        sshExecutor = SshCommandExecutorFactory.getExecutor(sessionManager);
     }
 
     public String executeCommand(CommandExecutor commandExecutor, String configName) {

@@ -14,11 +14,11 @@ public class DatabaseManager {
     }
 
     public void startDatabase() {
-        sshExecutor.sendCommand("startdatabase < /dev/null >& /dev/null \n sleep 10 ");
+        sshExecutor.executeCommand("startdatabase < /dev/null >& /dev/null \n sleep 10 ");
     }
 
     public void stopDatabase() {
-        sshExecutor.sendCommand("stopdatabase < /dev/null >& /dev/null \n sleep 10 ");
+        sshExecutor.executeCommand("stopdatabase < /dev/null >& /dev/null \n sleep 10 ");
     }
 
     public void operateOnDbValues(String configName) {
@@ -27,7 +27,7 @@ public class DatabaseManager {
                         "database.properties > dp.temp && mv dp.temp database.properties \n sleep 5",
                 "$AMS_CONFIG_DIR", configName
         );
-        sshExecutor.sendCommand(command);
+        sshExecutor.executeCommand(command);
     }
 
 }

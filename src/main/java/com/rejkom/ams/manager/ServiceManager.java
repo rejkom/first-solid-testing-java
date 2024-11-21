@@ -14,17 +14,17 @@ public class ServiceManager {
     }
 
     public void startService(String configName) {
-        sshExecutor.sendCommand(". .bashrc \n SERVICE start $CONFIG_DIR/" + configName + "\n" +
+        sshExecutor.executeCommand(". .bashrc \n SERVICE start $CONFIG_DIR/" + configName + "\n" +
                 "sleep 10");
     }
 
     public void restartService(String configName) {
-        sshExecutor.sendCommand(". .bashrc \n SERVICE restart $CONFIG_DIR/" + configName + "\n" +
+        sshExecutor.executeCommand(". .bashrc \n SERVICE restart $CONFIG_DIR/" + configName + "\n" +
                 "sleep 15");
     }
 
     public void stopService(String configName) {
-        sshExecutor.sendCommand(". .bashrc \n SERVICE stop $CONFIG_DIR/" + configName + "\n");
+        sshExecutor.executeCommand(". .bashrc \n SERVICE stop $CONFIG_DIR/" + configName + "\n");
     }
 
 }

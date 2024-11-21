@@ -14,12 +14,12 @@ public class OrchestratorManager {
     }
 
     public void startOrchestrator() {
-        sshExecutor.sendCommand(". .bashrc ; sudo $HOME/startOrchestrator " +
+        sshExecutor.executeCommand(". .bashrc ; sudo $HOME/startOrchestrator " +
                 "start < /dev/null >& /dev/null & sleep 10 \n");
     }
 
     public void stopOrchestrator() {
-        sshExecutor.sendCommand(". .bashrc ; $HOME/stopOrchestrator " +
+        sshExecutor.executeCommand(". .bashrc ; $HOME/stopOrchestrator " +
                 "stop < /dev/null >& /dev/null & sleep 10");
     }
 

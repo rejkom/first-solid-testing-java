@@ -27,8 +27,8 @@ public class ApplicationRunner {
 
         LogManager configLogs = new LogManager(ams.getSshExecutor());
 
-        AmsStartOnLinux start = new AmsStartOnLinux(ams.getSshExecutor());
-        AmsStopOnLinux stop = new AmsStopOnLinux(ams.getSshExecutor());
+        AmsStart start = new AmsStart(ams.getSshExecutor());
+        AmsStop stop = new AmsStop(ams.getSshExecutor());
 
         String startResult = ams.executeCommand(start, CONFIG_NAME);
         configLogs.checkLogContains(CONFIG_NAME, "successfully started");

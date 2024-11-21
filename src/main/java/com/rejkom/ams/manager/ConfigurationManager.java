@@ -15,7 +15,7 @@ public class ConfigurationManager {
 
     public void setProperties(String[][] properties) {
         for (String[] line : properties) {
-            sshExecutor.sendCommand(". .bashrc \n" +
+            sshExecutor.executeCommand(". .bashrc \n" +
                     "cd $CONFIG_DIR/" + line[0] + "\n" +
                     line[1] + "\n" +
                     "sed -e 's/^" + line[2] + ".*/" + line[2] + "=" + line[3] + "/' " +
@@ -25,13 +25,13 @@ public class ConfigurationManager {
 
     public void addNewProperties(String[][] properties) {
         for (String[] line : properties) {
-            sshExecutor.sendCommand(". .bashrc \n " +
+            sshExecutor.executeCommand(". .bashrc \n " +
                     "echo \"" + line[1] + "=" + line[2] + "\">> $CONFIG_DIR/" + line[0] + "/" + line[3] + "\n");
         }
     }
 
     public void configureApplication(String configName) {
-        sshExecutor.sendCommand(". .bashrc \n configureService " + configName + " \n");
+        sshExecutor.executeCommand(". .bashrc \n configureService " + configName + " \n");
     }
 
     public void removeEOL(String[][] properties) {
@@ -40,14 +40,14 @@ public class ConfigurationManager {
                     "echo '\\nNEW LINE' >> $AMS_CONFIG_DIR/%s%s%s\n sed '$ d' $AMS_CONFIG_DIR/%s%s > $AMS_CONFIG_DIR/%s%s%s",
                     line[0], line[1], line[2], line[0], line[1], line[0], line[1], line[3]
             );
-            sshExecutor.sendCommand(command);
+            sshExecutor.executeCommand(command);
         }
     }
 
     public void setJMSProperties(String[][] properties) {
 
         for (String[] line : properties) {
-            sshExecutor.sendCommand("sed -e 's/^service.jms.provider.url=.*"
+            sshExecutor.executeCommand("sed -e 's/^service.jms.provider.url=.*"
                     + "/service.jms.provider.url=file:jndi-directory"
                     + line[0] + "/service.jms.properties > $AMS_CONFIG_DIR/"
                     + line[0] + "/temp && mv $AMS_CONFIG_DIR/"

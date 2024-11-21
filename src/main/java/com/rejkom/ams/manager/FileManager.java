@@ -13,28 +13,30 @@ import java.io.*;
 public class FileManager {
 
     private final SshCommandExecutor sshExecutor;
+    private final SshSessionManager sessionManager;
 
-    public FileManager(SshCommandExecutor sshExecutor) {
+    public FileManager(SshCommandExecutor sshExecutor, SshSessionManager sessionManager) {
         this.sshExecutor = sshExecutor;
+        this.sessionManager = sessionManager;
     }
 
     public void clearData() {
-        sshExecutor.sendCommand(". .bashrc \n rm $CONFIG_DIR/data/input/done/* " +
+        sshExecutor.executeCommand(". .bashrc \n rm $CONFIG_DIR/data/input/done/* " +
                 "$CONFIG_DIR/data/output/final/* \n");
     }
 
     public void copyTestData(String configName) {
-        sshExecutor.sendCommand(". .bashrc \n cd $CONFIG_DIR/" + configName + "\n" +
+        sshExecutor.executeCommand(". .bashrc \n cd $CONFIG_DIR/" + configName + "\n" +
                 "cp test-data/* data/import/in/ \n sleep 7 ");
     }
 
     public void copyMsgTestData2Export(String configName, String msgName, String importPath) {
-        sshExecutor.sendCommand(". .bashrc \n cd $ABC_CONFIG_DIR/" + configName + " \n " +
+        sshExecutor.executeCommand(". .bashrc \n cd $ABC_CONFIG_DIR/" + configName + " \n " +
                 "cp test-data/" + msgName + " data/import/in/" + importPath + " \n sleep 20");
     }
 
     public void copySqlStatement(String sqlStatement) {
-        sshExecutor.sendCommand(". .bashrc \n cp $AMS_CONFIG_DIR/sampleMsg/import/sql/" +
+        sshExecutor.executeCommand(". .bashrc \n cp $AMS_CONFIG_DIR/sampleMsg/import/sql/" +
                 sqlStatement + " $ABC_CONFIG_DIR/JDBCDestination/data/import/in \n sleep 10");
     }
 
@@ -43,7 +45,7 @@ public class FileManager {
         String filePath = "$AMS_CONFIG_DIR sampleMsg/received/" + saveFilePath;
 
         try {
-            Channel channel = sshExecutor.getSessionManager().getSession().openChannel("exec");
+            Channel channel = sessionManager.getSession().openChannel("exec");
             OutputStream outputStream = new FileOutputStream(filePath);
             InputStream inputStream = channel.getInputStream();
 
@@ -70,9 +72,9 @@ public class FileManager {
                 "/test-data/" + expectedPath + " $configDirectory/" + receivedConfig +
                 "/data/export/" + receivedPath + " 2>&1 | cat > $configDirectory/" + expectedConfig + "/result.xml";
 
-        sshExecutor.sendCommand(compareCommand);
+        sshExecutor.executeCommand(compareCommand);
         String command = ". .bashrc \n cat $configDirectory/" + expectedConfig + "/result.xml \n";
-        Channel channel = sshExecutor.getSessionManager().getSession().openChannel("exec");
+        Channel channel = sessionManager.getSession().openChannel("exec");
         ((ChannelExec) channel).setCommand(command);
         channel.setInputStream(null);
         channel.connect();
@@ -90,7 +92,7 @@ public class FileManager {
     public boolean grepFile(String filePatch, String fileName, String grepCommand) {
 
         String command = "cat " + filePatch + "/" + fileName + " | grep \"" + grepCommand + "\"";
-        return !sshExecutor.sendCommand(command).isEmpty();
+        return !sshExecutor.executeCommand(command).isEmpty();
     }
 
 }

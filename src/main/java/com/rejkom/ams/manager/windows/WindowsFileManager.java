@@ -1,6 +1,15 @@
-package com.rejkom.ams.manager;
+package com.rejkom.ams.manager.windows;
+
+import com.rejkom.ams.executor.SshCommandExecutor;
+import com.rejkom.ams.manager.FileManager;
 
 public class WindowsFileManager implements FileManager {
+
+    private final SshCommandExecutor sshExecutor;
+
+    public WindowsFileManager(SshCommandExecutor sshExecutor) {
+        this.sshExecutor = sshExecutor;
+    }
 
     @Override
     public void clearData() {

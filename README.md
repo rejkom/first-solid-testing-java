@@ -54,3 +54,16 @@
 
 * Refactor the `FileManger` class by defining a common interface for file operations and providing separate
   implementations for Linux and Windows, ensuring maintainability.
+
+---
+
+## Dependency Inversion Principle (DIP)
+
+### Problem to consider:
+
+* The `Manager` classes contain methods specific to Linux, making it difficult to extend or adapt for other operating
+  systems.
+
+### Solution:
+
+* Create abstractions for the `Manger` classes to hide low-level details.

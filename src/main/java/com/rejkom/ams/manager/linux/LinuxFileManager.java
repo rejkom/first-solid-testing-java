@@ -1,9 +1,12 @@
-package com.rejkom.ams.manager;
+package com.rejkom.ams.manager.linux;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.rejkom.ams.executor.SshCommandExecutorOnLinux;
 import com.rejkom.ams.executor.SshCommandExecutor;
+import com.rejkom.ams.manager.FileManager;
 
 import java.io.*;
 import java.util.logging.Logger;
@@ -11,12 +14,12 @@ import java.util.logging.Logger;
 public class LinuxFileManager implements FileManager {
 
     private static final Logger LOGGER = Logger.getLogger(LinuxFileManager.class.getName());
-    private final SshCommandExecutor sshExecutor;
-    private final SshSessionManager sessionManager;
+    private final SshCommandExecutorOnLinux sshExecutor;
+    private final Session session;
 
-    public LinuxFileManager(SshCommandExecutor sshExecutor, SshSessionManager sessionManager) {
-        this.sshExecutor = sshExecutor;
-        this.sessionManager = sessionManager;
+    public LinuxFileManager(SshCommandExecutor sshExecutor) {
+        this.sshExecutor = (SshCommandExecutorOnLinux) sshExecutor;
+        this.session = ((SshCommandExecutorOnLinux) sshExecutor).getSessionManager().getSession();
     }
 
     @Override
@@ -49,7 +52,7 @@ public class LinuxFileManager implements FileManager {
         String filePath = "$AMS_CONFIG_DIR sampleMsg/received/" + saveFilePath;
 
         try {
-            Channel channel = sessionManager.getSession().openChannel("exec");
+            Channel channel =session.openChannel("exec");
             OutputStream outputStream = new FileOutputStream(filePath);
             InputStream inputStream = channel.getInputStream();
 
@@ -79,7 +82,7 @@ public class LinuxFileManager implements FileManager {
         String command = ". .bashrc \n cat $configDirectory/" + expectedConfig + "/result.xml \n";
         String diffResult = "";
         try {
-            Channel channel = sessionManager.getSession().openChannel("exec");
+            Channel channel = session.openChannel("exec");
             ((ChannelExec) channel).setCommand(command);
             channel.setInputStream(null);
             channel.connect();

@@ -40,3 +40,17 @@
 
 * Create subclasses that override superclass methods in a way that does not break functionality. For example, ensure
   that any class implementing ` SshCommandExecutor` can be used interchangeably without altering the expected behavior.
+
+---
+
+## Interface Segregation Principle (ISP)
+
+### Problem to consider:
+
+* The `FileManager` class contains methods specific to Linux, making it difficult to extend or adapt for other operating
+  systems, violating the Interface Segregation Principle.
+
+### Solution:
+
+* Refactor the `FileManger` class by defining a common interface for file operations and providing separate
+  implementations for Linux and Windows, ensuring maintainability.
